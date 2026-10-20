@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KetikAI - Solusi Konten & Bisnis Otomatis Berbasis AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f3ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-panel-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #e879f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-darkbg text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+
+    <!-- Toast Notification for Actions -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-in-out max-w-md bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toast-message">Notifikasi berhasil!</span>
+    </div>
+
+    <!-- HEADER & NAVBAR -->
+    <header class="fixed top-0 left-0 w-full z-40 glass-panel border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl gradient-btn flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <span class="text-2xl font-extrabold tracking-tight">Ketik<span class="gradient-text">AI</span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#fitur" class="hover:text-indigo-400 transition-colors">Masalah & Solusi</a>
+                <a href="#ai-simulator" class="hover:text-indigo-400 transition-colors">Simulator AI</a>
+                <a href="#harga" class="hover:text-indigo-400 transition-colors">Paket & Monetisasi</a>
+                <a href="#validasi" class="hover:text-indigo-400 transition-colors">Validasi Ide</a>
+            </nav>
+
+            <!-- CTA Button Header -->
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#ai-simulator" class="gradient-btn text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-yellow-300"></i> Coba AI Gratis
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none p-2" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900/95 border-b border-slate-800 px-4 pt-2 pb-6 space-y-3">
+            <a href="#fitur" class="block py-2 text-slate-300 hover:text-indigo-400 font-medium">Masalah & Solusi</a>
+            <a href="#ai-simulator" class="block py-2 text-slate-300 hover:text-indigo-400 font-medium">Simulator AI</a>
+            <a href="#harga" class="block py-2 text-slate-300 hover:text-indigo-400 font-medium">Paket & Monetisasi</a>
+            <a href="#validasi" class="block py-2 text-slate-300 hover:text-indigo-400 font-medium">Validasi Ide</a>
+            <a href="#ai-simulator" class="w-full gradient-btn text-white py-3 rounded-xl font-semibold text-center block mt-4">
+                Coba AI Gratis
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        <!-- Background Glow FX -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute top-1/3 right-10 w-[300px] h-[300px] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <!-- Badge Concept -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-indigo-300 text-xs sm:text-sm font-semibold mb-8 border border-indigo-500/30">
+                <span class="flex h-2 w-2 rounded-full bg-indigo-400 animate-ping"></span>
+                Inovasi Startup TIK Siswa SMK & Startup Digital
+            </div>
+
+            <!-- Headline & Subheadline -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto">
+                Solusi Konten & Bisnis Otomatis Berbasis <span class="gradient-text">AI Terintegrasi</span>
+            </h1>
+            <p class="mt-6 text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-normal">
+                Bantu pelajar bikin portofolio/tugas TIK dan bantu UMKM muda buat copywriting promosi penjualan otomatis dalam hitungan detik.
+            </p>
+
+            <!-- Hero Action Buttons -->
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#ai-simulator" class="w-full sm:w-auto gradient-btn text-white px-8 py-4 rounded-xl font-bold text-base shadow-xl flex items-center justify-center gap-3 group">
+                    <i class="fa-solid fa-sparkles text-yellow-300"></i> Coba Simulator AI Gratis
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <a href="#validasi" class="w-full sm:w-auto glass-panel text-slate-200 hover:text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-slate-800/80 transition-all border border-slate-700 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-indigo-400"></i> Form Pre-Order / Validasi
+                </a>
+            </div>
+
+            <!-- Business Credibility Metrics -->
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-8 border-t border-slate-800">
+                <div class="p-4">
+                    <h3 class="text-3xl font-extrabold text-white">95%</h3>
+                    <p class="text-xs text-slate-400 mt-1">Efisiensi Waktu Pembuatan Konten</p>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-3xl font-extrabold text-white">3x Lebih Fast</h3>
+                    <p class="text-xs text-slate-400 mt-1">Peningkatan Penjualan UMKM</p>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-3xl font-extrabold text-white">100+</h3>
+                    <p class="text-xs text-slate-400 mt-1">Siswa & UMKM Terbantu</p>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-3xl font-extrabold text-white">24/7</h3>
+                    <p class="text-xs text-slate-400 mt-1">Asisten AI Siap Dipakai</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM & SOLUTION SECTION -->
+    <section id="fitur" class="py-20 bg-slate-900/50 border-y border-slate-800/80 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Tujuan & Solusi Bisnis</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Mengapa KetikAI Sangat Dibutuhkan?</p>
+                <p class="text-slate-400 mt-3">Kami menjembatani kendala efisiensi yang dialami generasi muda dan pelaku usaha mikro.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Mass Problems -->
+                <div class="glass-panel p-8 rounded-2xl border-l-4 border-l-red-500 hover:border-slate-700 transition-all">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Masalah Utama (Pain Points)</h3>
+                    </div>
+                    <ul class="space-y-4 text-slate-300 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+                            <span><strong>Pelajar & Mahasiswa:</strong> Kesulitan menyusun portofolio TIK profesional, laporan praktikum, atau deskripsi proyek sekolah yang menarik.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+                            <span><strong>UMKM Muda & Pemula:</strong> Sulit merangkai kata-kata penawaran (copywriting) produk yang menjual dan konsisten di sosmed.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-xmark text-red-400 mt-1"></i>
+                            <span><strong>Biaya Agensi Mahal:</strong> Menyewa copywriter profesional membutuhkan dana yang belum terjangkau oleh UMKM rintisan.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- AI Solutions -->
+                <div class="glass-panel p-8 rounded-2xl border-l-4 border-l-emerald-500 hover:border-slate-700 transition-all">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Solusi Inovatif KetikAI</h3>
+                    </div>
+                    <ul class="space-y-4 text-slate-300 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                            <span><strong>Generator Otomatis Cepat:</strong> Cukup masukkan kata kunci sederhana, AI menghasilkan draf teks profesional dalam hitungan detik.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                            <span><strong>Template Sesuai Kebutuhan Lokal:</strong> Tersedia pilihan mode khusus untuk jualan online, medsom marketing, hingga dokumen tugas SMK/Kuliah.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                            <span><strong>Harga Sangat Terjangkau:</strong> Paket langganan menyesuaikan kantong pelajar dan budget usaha mikro.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE AI ASSISTANT / SIMULATOR SECTION -->
+    <section id="ai-simulator" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Fitur Utama Prototipe</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Simulator AI Content Generator</h2>
+                <p class="text-slate-400 mt-2">Uji coba kehebatan generator tulisan otomatis KetikAI di bawah ini secara langsung!</p>
+            </div>
+
+            <!-- Interactive Workbench Simulator -->
+            <div class="max-w-4xl mx-auto glass-panel rounded-2xl p-6 md:p-8 shadow-2xl border border-indigo-500/20">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Left Column: Input Form -->
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">1. Pilih Kategori Konten</label>
+                            <select id="ai-category" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <option value="umkm">Deskripsi Produk UMKM / Toko Online</option>
+                                <option value="caption">Caption Instagram Marketing (Softsell)</option>
+                                <option value="tiktok">Ide Script Video TikTok / Reels</option>
+                                <option value="portofolio">Ringkasan Portofolio / Bio Proyek TIK</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">2. Kata Kunci / Detail Produk</label>
+                            <textarea id="ai-keywords" rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 placeholder-slate-500" placeholder="Contoh: Kopi Susu Gula Aren, Manis Pas, Kemasan Banting, Diskon 20% untuk Pelajar"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">3. Nada Gaya Bahasa (Tone of Voice)</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setTone('Persuasif & Ceria')" class="tone-btn active bg-indigo-600 text-white text-xs py-2 px-3 rounded-lg font-medium transition-all">Persuasif</button>
+                                <button type="button" onclick="setTone('Profesional & Formal')" class="tone-btn bg-slate-800 text-slate-400 text-xs py-2 px-3 rounded-lg font-medium transition-all">Profesional</button>
+                                <button type="button" onclick="setTone('Santai & Gaul')" class="tone-btn bg-slate-800 text-slate-400 text-xs py-2 px-3 rounded-lg font-medium transition-all">Casual/Santai</button>
+                            </div>
+                        </div>
+
+                        <button id="generate-btn" onclick="generateAIContent()" class="w-full gradient-btn text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Hasilkan Konten AI Sekarang
+                        </button>
+                    </div>
+
+                    <!-- Right Column: Live Typing Output Display -->
+                    <div class="bg-slate-900/90 rounded-xl p-5 border border-slate-800 flex flex-col justify-between min-h-[320px] relative">
+                        <div>
+                            <!-- Header Console -->
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-xs text-slate-400">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Output Result
+                                </span>
+                                <span id="selected-tone-display" class="italic text-indigo-400">Tone: Persuasif & Ceria</span>
+                            </div>
+
+                            <!-- Typing Result Container -->
+                            <div id="ai-output" class="text-sm text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">
+<span class="text-slate-500 italic">// Hasil buatan AI KetikAI akan muncul di sini... Masukkan kata kunci lalu klik tombol di samping kiri!</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Bar Bottom -->
+                        <div class="pt-4 border-t border-slate-800 flex items-center justify-between mt-4">
+                            <span class="text-xs text-slate-500" id="char-count">0 karakter</span>
+                            <button onclick="copyToClipboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-300 px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 font-medium border border-slate-700">
+                                <i class="fa-regular fa-copy"></i> Salin Teks
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MONETIZATION & PRICING SIMULATOR -->
+    <section id="harga" class="py-20 bg-slate-900/50 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Model Bisnis & Langganan</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Paket Harga Ramah Kantong</p>
+                <p class="text-slate-400 mt-2">Didesain ramah untuk budget pelajar maupun modal usaha rintisan UMKM.</p>
+                
+                <!-- Toggle Monthly/Yearly -->
+                <div class="mt-8 flex items-center justify-center gap-4">
+                    <span id="label-monthly" class="text-sm font-semibold text-indigo-400">Bulanan</span>
+                    <button id="billing-toggle" onclick="toggleBilling()" class="w-14 h-8 bg-indigo-600 rounded-full p-1 transition-colors relative" aria-label="Toggle Billing">
+                        <div id="toggle-circle" class="w-6 h-6 bg-white rounded-full transition-transform transform translate-x-0"></div>
+                    </button>
+                    <span id="label-yearly" class="text-sm font-semibold text-slate-400">Tahunan <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">Hemat 20%</span></span>
+                </div>
+            </div>
+
+            <!-- Pricing Cards Grid -->
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Package 1: Pelajar -->
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Khusus Siswa/Mahasiswa</span>
+                            <i class="fa-solid fa-graduation-cap text-indigo-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Paket Pelajar</h3>
+                        <p class="text-xs text-slate-400 mt-1">Cocok untuk tugas TIK, tugas kelompok & portofolio.</p>
+                        
+                        <div class="my-6">
+                            <span class="text-4xl font-extrabold text-white price-value" data-monthly="15.000" data-yearly="144.000">Rp 15.000</span>
+                            <span class="text-xs text-slate-400 billing-period">/bulan</span>
+                        </div>
+
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> 50 Generasi Teks AI / bulan</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Template Tugas & Portofolio</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Export Teks Cepat (.txt)</li>
+                            <li class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-xmark text-xs"></i> Bantuan Komersial UMKM</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPackage('Paket Pelajar')" class="w-full py-3 rounded-xl border border-indigo-500 text-indigo-300 hover:bg-indigo-600 hover:text-white font-semibold transition-all text-sm">
+                        Pilih Paket Pelajar
+                    </button>
+                </div>
+
+                <!-- Package 2: Starter UMKM (Popular Choice) -->
+                <div class="glass-panel p-8 rounded-2xl border-2 border-indigo-500 relative transform md:-translate-y-2 shadow-2xl flex flex-col justify-between">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                        Paling Favorit
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Rekomendasi Utama</span>
+                            <i class="fa-solid fa-store text-indigo-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Starter UMKM</h3>
+                        <p class="text-xs text-slate-400 mt-1">Solusi jualan online, medsos marketing & promo.</p>
+                        
+                        <div class="my-6">
+                            <span class="text-4xl font-extrabold text-white price-value" data-monthly="49.000" data-yearly="470.000">Rp 49.000</span>
+                            <span class="text-xs text-slate-400 billing-period">/bulan</span>
+                        </div>
+
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Unlimited Generasi Teks AI</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Copywriting Deskripsi Produk</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Generator Ide TikTok & IG Reels</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Tone of Voice Costumizable</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPackage('Starter UMKM')" class="w-full gradient-btn text-white py-3.5 rounded-xl font-bold transition-all text-sm shadow-lg">
+                        Pilih Starter UMKM
+                    </button>
+                </div>
+
+                <!-- Package 3: Pro Business -->
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Agensi & Bisnis</span>
+                            <i class="fa-solid fa-briefcase text-indigo-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Pro Business</h3>
+                        <p class="text-xs text-slate-400 mt-1">Gunakan untuk banyak brand & tim marketing.</p>
+                        
+                        <div class="my-6">
+                            <span class="text-4xl font-extrabold text-white price-value" data-monthly="99.000" data-yearly="950.000">Rp 99.000</span>
+                            <span class="text-xs text-slate-400 billing-period">/bulan</span>
+                        </div>
+
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Fitur Starter UMKM Full</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Akses API Integration</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Prioritas Generasi Tercepat</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i> Konsultasi Startup 1-on-1</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPackage('Pro Business')" class="w-full py-3 rounded-xl border border-indigo-500 text-indigo-300 hover:bg-indigo-600 hover:text-white font-semibold transition-all text-sm">
+                        Pilih Pro Business
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALIDATION FORM & PRE-ORDER INTEGRATION -->
+    <section id="validasi" class="py-20 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel p-8 md:p-12 rounded-3xl border border-indigo-500/30 relative overflow-hidden">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Validasi Pasar Startup</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-3">Formulir Pre-Order & Konsultasi</h2>
+                    <p class="text-slate-400 text-sm mt-2">Bantu kami mempervalidasi ide startup ini! Isi form di bawah untuk mendaftar sebagai pengguna awal (Early Access) atau konsultasi gratis.</p>
+                </div>
+
+                <form id="validation-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Nama Lengkap</label>
+                            <input type="text" id="user-name" required placeholder="Contoh: Budi Pratama" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Nomor WhatsApp</label>
+                            <input type="tel" id="user-phone" required placeholder="Contoh: 081234567890" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Kategori Pengguna</label>
+                            <select id="user-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                                <option value="Siswa SMK / Mahasiswa">Siswa SMK / Mahasiswa</option>
+                                <option value="Pemilik UMKM Rintisan">Pemilik UMKM Rintisan</option>
+                                <option value="Content Creator / Freelancer">Content Creator / Freelancer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Pilihan Paket Peminatan</label>
+                            <select id="selected-plan-form" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                                <option value="Paket Pelajar">Paket Pelajar (Rp 15k/bln)</option>
+                                <option value="Starter UMKM" selected>Starter UMKM (Rp 49k/bln)</option>
+                                <option value="Pro Business">Pro Business (Rp 99k/bln)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Masukan / Kendala Pembuatan Konten Saat Ini</label>
+                        <textarea id="user-feedback" rows="3" placeholder="Sampaikan saran atau kesulitan yang sering kamu alami..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full gradient-btn text-white py-4 rounded-xl font-bold text-base shadow-xl flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-xl"></i> Kirim & Dapatkan Early Access Via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg gradient-btn flex items-center justify-center text-white font-bold text-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <span class="text-xl font-bold">Ketik<span class="gradient-text">AI</span></span>
+                <span class="text-xs text-slate-500 border-l border-slate-800 pl-3">Proyek Wirausaha TIK Siswa SMK</span>
+            </div>
+
+            <p class="text-xs text-slate-500 text-center">
+                &copy; 2026 KetikAI Startup. Dikembangkan untuk Pelatihan Wirausaha Digital TIK.
+            </p>
+
+            <div class="flex items-center gap-4 text-slate-400">
+                <a href="#" class="hover:text-indigo-400"><i class="fa-brands fa-instagram text-lg"></i></a>
+                <a href="#" class="hover:text-indigo-400"><i class="fa-brands fa-tiktok text-lg"></i></a>
+                <a href="#" class="hover:text-indigo-400"><i class="fa-brands fa-github text-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        // State variables
+        let selectedTone = 'Persuasif & Ceria';
+        let isYearly = false;
+        let isTyping = false;
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Set Tone Function
+        function setTone(tone) {
+            selectedTone = tone;
+            document.getElementById('selected-tone-display').innerText = `Tone: ${tone}`;
+            
+            // UI Button state updates
+            const buttons = document.querySelectorAll('.tone-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(tone.split(' ')[0])) {
+                    btn.className = 'tone-btn active bg-indigo-600 text-white text-xs py-2 px-3 rounded-lg font-medium transition-all';
+                } else {
+                    btn.className = 'tone-btn bg-slate-800 text-slate-400 text-xs py-2 px-3 rounded-lg font-medium transition-all';
+                }
+            });
+        }
+
+        // Template Response Dataset for AI Generator Simulation
+        const aiTemplates = {
+            umkm: (keywords, tone) => `🔥 PROMO SPESIAL UNTUKMU! 🔥\n\nIngin merasakan sensasi nikmat yang bikin nagih? ${keywords || 'Produk Unggulan Kami'} adalah pilihan tepat buat kamu!\n\n✨ Mengapa Harus Coba?\n1. Dibuat dengan bahan premium & higienis\n2. Rasa otentik yang cocok di lidah\n3. Harga sangat bersahabat untuk kantong anak muda\n\n🎯 Gaya Bahasa: ${tone}\n👉 Buruan order sekarang sebelum kehabisan! Klik link di bio untuk diskon terbatas hari ini! 🚀`,
+            
+            caption: (keywords, tone) => `Stop scroll sebentar! ✋\n\nLagi nyari solusi buat ${keywords || 'kebutuhan harianmu'}? Kamu nggak sendiri! Banyak banget yang udah ngebuktiin kualitas dari produk ini.\n\nSimak alasan kenapa ini wajib kamu punya:\n✅ Praktis & Efisien\n✅ Cocok buat anak muda & pekerja kreatif\n✅ Garansi kepuasan 100%\n\nSaved post ini biar gak lupa, dan tag temen kamu yang butuh ini ya! 👇\n\n#KetikAI #SolusiCerdas #UMKMMuda #BisnisDigital`,
+            
+            tiktok: (keywords, tone) => `🎬 [SCRIPT VIDEO SHORT/TIKTOK - 15 DETIK]\n\n[00:00-00:03 - HOOK VISUAL]\n(Tunjukkan ekspresi bingung/pusing sambil memegang laptop/hp)\nVoiceover: "Pernah gak sih kalian pusing nyari ${keywords || 'solusi konten yang cepat'}?"\n\n[00:03-00:09 - PROBLEM & SOLUTION]\n(Transisi cepat memperlihatkan produk/solusi dengan efek animasi)\nVoiceover: "Tenang! Sekarang ada cara praktisnya tanpa ribet!"\n\n[00:09-00:15 - CALL TO ACTION]\n(Tunjukkan cara order atau penawaran khusus)\nVoiceover: "Cek keranjang kuning sekarang sebelum promonya habis!"`,
+            
+            portofolio: (keywords, tone) => `📌 RINGKASAN PORTOFOLIO / DEKSRIPSI PROYEK TIK\n\nNama Proyek: ${keywords || 'Aplikasi Digital Berbasis Web'}\nKategori: Pengembangan Software & Inovasi TIK SMK\n\nDeskripsi Ringkas:\nProyek ini dirancang untuk mengatasi permasalahan efisiensi operasional dengan memanfaatkan teknologi digital modern. Memiliki keunggulan pada antarmuka yang responsif, kecepatan akses, dan kemudahan bagi pengguna akhir.\n\nKeahlian Utama yang Digunakan:\n- UI/UX Wireframing & Prototyping\n- Frontend Development (HTML, CSS, JS)\n- Problem Solving & Validasi Pasar Startup`
+        };
+
+        // AI Typing Generator Function
+        function generateAIContent() {
+            if (isTyping) return;
+
+            const category = document.getElementById('ai-category').value;
+            const keywords = document.getElementById('ai-keywords').value.trim();
+            const outputElement = document.getElementById('ai-output');
+            const charCount = document.getElementById('char-count');
+            
+            const fullText = aiTemplates[category](keywords, selectedTone);
+
+            outputElement.innerText = '';
+            isTyping = true;
+            let index = 0;
+
+            const typingInterval = setInterval(() => {
+                if (index < fullText.length) {
+                    outputElement.innerText += fullText.charAt(index);
+                    index++;
+                    charCount.innerText = `${index} karakter`;
+                } else {
+                    clearInterval(typingInterval);
+                    isTyping = false;
+                    showToast("Konten AI berhasil dibuat!");
+                }
+            }, 15);
+        }
+
+        // Copy Text to Clipboard (with ExecCommand Fallback)
+        function copyToClipboard() {
+            const outputText = document.getElementById('ai-output').innerText;
+            if (!outputText || outputText.includes('// Hasil buatan AI')) {
+                showToast("Belum ada teks untuk disalin!");
+                return;
+            }
+
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = outputText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("Teks berhasil disalin ke clipboard!");
+            } catch (err) {
+                showToast("Gagal menyalin teks.");
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+
+        // Toggle Billing Yearly vs Monthly
+        function toggleBilling() {
+            isYearly = !isYearly;
+            const toggleCircle = document.getElementById('toggle-circle');
+            const labelMonthly = document.getElementById('label-monthly');
+            const labelYearly = document.getElementById('label-yearly');
+            const priceValues = document.querySelectorAll('.price-value');
+            const billingPeriods = document.querySelectorAll('.billing-period');
+
+            if (isYearly) {
+                toggleCircle.classList.add('translate-x-6');
+                labelMonthly.className = 'text-sm font-semibold text-slate-400';
+                labelYearly.className = 'text-sm font-semibold text-indigo-400';
+                
+                priceValues.forEach(el => {
+                    el.innerText = 'Rp ' + el.getAttribute('data-yearly');
+                });
+                billingPeriods.forEach(el => el.innerText = '/tahun');
+                showToast("Mode pembayaran tahunan diaktifkan (Diskon 20%)");
+            } else {
+                toggleCircle.classList.remove('translate-x-6');
+                labelMonthly.className = 'text-sm font-semibold text-indigo-400';
+                labelYearly.className = 'text-slate-400 text-sm font-semibold';
+                
+                priceValues.forEach(el => {
+                    el.innerText = 'Rp ' + el.getAttribute('data-monthly');
+                });
+                billingPeriods.forEach(el => el.innerText = '/bulan');
+            }
+        }
+
+        // Select Package via Button
+        function selectPackage(packageName) {
+            const planSelect = document.getElementById('selected-plan-form');
+            planSelect.value = packageName;
+            
+            // Scroll smooth to form
+            document.getElementById('validasi').scrollIntoView({ behavior: 'smooth' });
+            showToast(`Kamu memilih ${packageName}. Silakan lengkapi form!`);
+        }
+
+        // Handle Validation / Pre-Order Form Submission
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('user-name').value;
+            const phone = document.getElementById('user-phone').value;
+            const userType = document.getElementById('user-type').value;
+            const plan = document.getElementById('selected-plan-form').value;
+            const feedback = document.getElementById('user-feedback').value;
+
+            // Format WhatsApp Message
+            const waMessage = `Halo Tim KetikAI! Saya berminat dengan prototipe KetikAI.%0A%0A*Nama:* ${encodeURIComponent(name)}%0A*Kategori:* ${encodeURIComponent(userType)}%0A*Paket Minat:* ${encodeURIComponent(plan)}%0A*Masukan/Pesan:* ${encodeURIComponent(feedback || '-')}`;
+            
+            showToast("Mengalihkan ke WhatsApp...");
+            
+            // Open WhatsApp with pre-filled message
+            setTimeout(() => {
+                window.open(`https://wa.me/6281234567890?text=${waMessage}`, '_blank');
+            }, 1000);
+        }
+
+        // Helper Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.innerText = message;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
